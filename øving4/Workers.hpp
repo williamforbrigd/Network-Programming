@@ -10,6 +10,7 @@ using namespace std;
 
 class Workers {
 public:
+  vector<thread> threads;
   Workers(bool start_threads) : is_running(start_threads) {
     if(start_threads) 
       start(); 
@@ -17,6 +18,7 @@ public:
   Workers(int no_threads_) : no_threads(no_threads_) {}
 
   ~Workers() {
+    cout << "Stop is called: " << endl;
     stop();
   }
 
@@ -36,6 +38,7 @@ public:
           function<void()> task;
           {
             unique_lock<mutex> lock(task_mutex);
+            //cv.wait(lock);
             //TODO: use conditional variables. 
             cv.wait(lock, [&] {
               return !tasks.empty() + !is_running;
@@ -62,7 +65,7 @@ public:
   }
 
 /*
-  void post2(function<void()> task) {
+  void post(function<void()> task) {
     {
       unique_lock<mutex> lock(task_mutex);
       tasks.emplace_back(task);
@@ -86,13 +89,10 @@ public:
    cv.notify_all();
  }
 
-  
-
 private:
   condition_variable cv;
   mutex task_mutex;
   list<function<void()>> tasks;
   int no_threads;
-  vector<thread> threads;
   bool is_running = false;
 };
