@@ -1,25 +1,2 @@
   .DS_Store
-	exercise1/.vscode/
-	exercise1/SimpleServerClient/Client.class
-	exercise1/SimpleServerClient/Server.class
-	exercise1/cpp/
-	exercise1/file.txt
-	exercise1/index.html
-	exercise1/oppg1/Calculator.class
-	exercise1/oppg1/Client.class
-	exercise1/oppg1/ClientHandler.class
-	exercise1/oppg1/Server.class
-	exercise1/oppg2/JavaHTTPServer.class
-	exercise1/oppg2/JavaHTTPServer.java
-	exercise1/oppg2/WebClient.class
-	exercise1/oppg2/WebClient.java
-	exercise1/oppg2/WebServer.class
-	exercise1/oppg2/test.class
-	exercise1/oppg2/test.java
-	exercise1/test.txt
-	exercise1/testsol/
-	exercise1/trying/
-	"exercise1/\303\230ving1-william.zip"
-	"\303\230ving2/"
-	"\303\230ving3/"
-	"\303\230ving4/"
+  .class
