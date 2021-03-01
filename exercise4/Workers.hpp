@@ -5,12 +5,22 @@
 #include <mutex>
 #include <thread>
 #include <vector>
+#include <atomic>
 
 using namespace std;
 
 class Workers {
-public:
+private:
+  condition_variable cv;
+  mutex task_mutex;
+  mutex finished_mutex;
+  list<function<void()>> tasks;
+  int no_threads;
+  bool is_running = false;
+  atomic<bool> finished{false};
   vector<thread> threads;
+
+public:
   Workers(bool start_threads) : is_running(start_threads) {
     if(start_threads) 
       start(); 
@@ -18,41 +28,7 @@ public:
   Workers(int no_threads_) : no_threads(no_threads_) {}
 
   ~Workers() {
-    cout << "Stop is called: " << endl;
-    stop();
-  }
-
-  void start() {
-    {
-      unique_lock<mutex> lock(task_mutex);
-      if(is_running == true) return;
-      is_running = true;
-    }
-    add_threads();
-  }
-
-  void add_threads() {
-    for(int i=0; i < no_threads; i++) {
-      threads.emplace_back([this] {
-        for(;;) {
-          function<void()> task;
-          {
-            unique_lock<mutex> lock(task_mutex);
-            //cv.wait(lock);
-            //TODO: use conditional variables. 
-            cv.wait(lock, [&] {
-              return !tasks.empty() + !is_running;
-            });
-            if(!tasks.empty()) {
-              task = *tasks.begin();
-              tasks.pop_front();
-            }
-          }
-          if(task)
-            task();
-        }
-      });
-    }
+    cout << "Destructor is called." << endl;
   }
 
   template<typename... Args> 
@@ -61,38 +37,63 @@ public:
       unique_lock<mutex> lock(task_mutex);
       tasks.emplace_back(bind(forward<Args>(args)...));
     }
-    cv.notify_all();
+    {
+        //unique_lock<mutex> lock(wait_mutex);
+        //wait = false;
+    }
+    //cv.notify_all();
+    cv.notify_one();
   }
 
-/*
-  void post(function<void()> task) {
+  void start() {
     {
       unique_lock<mutex> lock(task_mutex);
-      tasks.emplace_back(task);
+      is_running = true;
     }
-    cv.notify_all();
+    run_threads();
   }
-  */
+
+  void run_threads() {
+    for(int i=0; i < no_threads; i++) {
+      threads.emplace_back([this] {
+        for(;;) {
+            function<void()> task;
+            {
+              unique_lock<mutex> lock(task_mutex);
+              if(!tasks.empty()) {
+                task = *tasks.begin();
+                tasks.pop_front();
+              } else {
+                if(finished) return;
+                cv.wait(lock);
+              }
+          }
+          if(task) {
+            task();
+          } 
+        }
+      });
+    }
+  }
 
  void join() {
+   stop();
    for(auto &t : threads) {
      t.join();
    }
  }
 
  void stop() {
-   {
-     unique_lock<mutex> lock(task_mutex);
-     if(is_running == false) return;
-     is_running = false;
-   }
+   finished.exchange(true);
    cv.notify_all();
  }
 
-private:
-  condition_variable cv;
-  mutex task_mutex;
-  list<function<void()>> tasks;
-  int no_threads;
-  bool is_running = false;
+ void post_tasks(int length, int &count, mutex &count_mutex) {
+   for(int i=0; i < length; i++) {
+     post([&count, &count_mutex]{
+       unique_lock<mutex> lock(count_mutex);
+       count++;
+     });
+   }
+ }
 };
