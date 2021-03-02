@@ -18,13 +18,10 @@ private:
   int no_threads;
   bool is_running = false;
   bool finished = false;
-  bool wait;
   vector<thread> threads;
 
 public:
   Workers(int no_threads_) : no_threads(no_threads_) {}
-
-  ~Workers() { cout << "Destructor is called." << endl; }
 
   template <typename... Args> void post(Args &&...args) {
     {
@@ -46,11 +43,6 @@ public:
     for (int i = 0; i < no_threads; i++) {
       threads.emplace_back([this] {
         for (;;) {
-          {
-            unique_lock<mutex> lock(wait_mutex);
-            while (wait)
-              cv.wait(lock);
-          }
           function<void()> task;
           {
             unique_lock<mutex> lock(task_mutex);
@@ -83,7 +75,6 @@ public:
     {
       unique_lock<mutex> lock(task_mutex);
       finished = true;
-      wait = false;
     }
     cv.notify_all();
   }

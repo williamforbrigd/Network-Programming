@@ -12,11 +12,6 @@ int main() {
   worker_threads.start(); // Create 4 internal threads.
   event_loop.start();     // Create 1 internal thread.
 
-  // mutex count_mutex;
-  // int count = 0;
-  // worker_threads.post_tasks(12356, ref(count), ref(count_mutex));
-  // event_loop.post_tasks(644, ref(count), ref(count_mutex));
-
   worker_threads.post([] { cout << "Task A" << endl; });
 
   worker_threads.post([] { cout << "Task B" << endl; });
@@ -33,8 +28,6 @@ int main() {
 
   worker_threads.join(); // Calls join() on the worker threads
   event_loop.join();     // Calls join() on the event loop
-
-  // cout << "The count is: " << count << endl;
 
   return 0;
 }
