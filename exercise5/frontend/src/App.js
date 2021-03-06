@@ -1,9 +1,13 @@
 import './App.css';
 import Compile from './components/Compile';
+import Example from './components/Example';
 
 function App() {
   return (
-    <Compile />
+    <div>
+      <Compile />
+      <Example />
+    </div>
   );
 }
 
