@@ -12,33 +12,36 @@ function Compile() {
 
 function CompileRun(props) {
     const [textInput, setTextInput] = useState("");
-    const [code, setCode] = useState("cpp program");
 
-    console.log(code);
     console.log(textInput);
-
-    const handleClick = (e) => {
-        setCode(e.target.value);
-    };
 
     const handleInput = (e) => {
         setTextInput(e.target.value);
     }
 
+    /*
+    const compile = (e) => {
+        const requestOptions = {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ title: 'React POST request example '})
+        };
+    }
+    */
+
     return (
         <div>
-            <TextareaAutosize 
-                input={code}
+            <TextareaAutosize
+                input={textInput}
                 onInput={handleInput} 
                 rowsMin={10}
                 defaultValue="hei"
             />
-            <Button onClick={handleClick}>
+            <Button >
                 Click me
             </Button>
         </div>
  );
 }
-
 
 export default Compile;
