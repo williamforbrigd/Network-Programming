@@ -12,7 +12,7 @@ public class CodeService {
     @Autowired
     private CodeRepo repo;
 
-    public CodeOutput buildAndRunDocker() throws IOException {
-        return repo.buildAndRunDocker();
+    public CodeOutput buildAndRunDocker(CodeOutput code) throws IOException {
+        return repo.buildAndRunDocker(code);
     }
 }

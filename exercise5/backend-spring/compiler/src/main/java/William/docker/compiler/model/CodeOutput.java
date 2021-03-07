@@ -1,18 +1,23 @@
 package William.docker.compiler.model;
 
 public class CodeOutput {
-    StringBuilder code;
+    String code;
 
-    public CodeOutput(StringBuilder code) {
+    public CodeOutput(String code) {
         this.code = code;
     }
 
-    public StringBuilder getCode() {
+    public CodeOutput() {}
+
+    public String getCode() {
         return this.code;
     }
 
-    public void setCode(StringBuilder code) {
+    public void setCode(String code) {
         this.code = code;
     }
 
+    public String toString() {
+        return this.code;
+    }
 }
