@@ -13,8 +13,8 @@ public class CodeRepo {
         writer.close();
     }
     public CodeOutput buildAndRunDocker(CodeOutput code) throws IOException {
-        //String path = "src/main/resources/main.cpp";
-        //writeToFile(code.toString(), path);
+        String path = "src/main/resources/main.cpp";
+        writeToFile(code.toString(), path);
         ProcessBuilder pb = new ProcessBuilder();
         pb.command("bash", "src/main/resources/docker-script.sh");
         //pb.redirectErrorStream(true); //to get the ouput of the stream

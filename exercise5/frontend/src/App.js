@@ -3,7 +3,7 @@ import './App.css';
 import { TextareaAutosize, Button } from '@material-ui/core';
 
 function App() {
-const [code, setCode ] = useState("#include <iostream> int main() {std::cout<<\"yoyoyyoyo\"<<std::endl;}");
+const [code, setCode ] = useState("#include <iostream> \n int main() {std::cout<<\"hei willi\"<<std::endl;}");
 const [output, setOutput] = useState("");
 
 const postRequest = async() => {
@@ -13,15 +13,14 @@ const postRequest = async() => {
           body: JSON.stringify(code)
   };
   fetch("http://localhost:8080/docker", requestOptions)
-    //.then(response => response.json())
+    .then(response => response.json())
     .then(result => {
-      setOutput(result);
+      setOutput(result.code);
     });
 };
 
 const handleInput = (e) => {
   setCode(e.target.value);
-  console.log(e.target.value);
 };
 
 return (
@@ -35,9 +34,9 @@ return (
     <Button onClick={postRequest}>
       Compile and Run
     </Button>
-    <h3>
-      The output is: {output}
-    </h3>
+    <h5>
+      {output}
+    </h5>
   </div>
   );
 }
