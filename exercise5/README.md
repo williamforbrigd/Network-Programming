@@ -1,8 +1,8 @@
 # Run the app first in frontend
 
-cd frontend \n
-npm install \n
-npm start \n
+cd frontend <br />
+npm install <br />
+npm start <br />
 
 # Before pressing the "Compile And Run" button, you need to run the backend-program:
 
