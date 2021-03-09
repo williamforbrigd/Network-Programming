@@ -1,4 +1,4 @@
-# Run the app first in frontend
+# To run the app
 
 cd frontend <br />
 npm install <br />
@@ -6,8 +6,8 @@ npm start <br />
 
 # The open in: http://localhost:3000
 
-# Before pressing the "Compile And Run" button, you need to run the backend-program:
+# Before pressing "Compile And Run", change the directory
 
-cd backend-spring/compiler/src/main/java/William/docker/compiler
+cd ../backend-spring/compiler/src/main/java/William/docker/compiler
 
 # Then run CompilerApplication.java
