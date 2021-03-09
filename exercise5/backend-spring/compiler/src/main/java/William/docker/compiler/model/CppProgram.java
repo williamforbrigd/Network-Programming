@@ -1,22 +1,21 @@
 package William.docker.compiler.model;
 
-public class CodeOutput {
+public class CppProgram {
     String code;
 
-    public CodeOutput(String code) {
+    public CppProgram(String code) {
         this.code = code;
     }
 
-    public CodeOutput() {}
-
     public String getCode() {
-        return this.code;
+        return code;
     }
 
     public void setCode(String code) {
         this.code = code;
     }
 
+    @Override
     public String toString() {
         return this.code;
     }
