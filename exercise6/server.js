@@ -34,19 +34,19 @@ httpServer.listen(3000, () => {
 const wsServer = net.createServer((connection) => {
   console.log("Client connected");
 
-  const rfc6455= "258EAFA5-E914-47DA-95CA-C5AB0DC85B11";
-
   connection.on("data", (data) => {
     console.log("Data received from client: ", data.toString());
     let key = "";
     if((key = hasKey(data.toString())) != null) {
-      let acceptString = base64encode(sha1(key + rfc6455));
+      let acceptString = base64encode(sha1(key));
 
       connection.write("HTTP/1.1 101 Switching Protocols\r\n");
       connection.write("Upgrade: websocket\r\n");
       connection.write("Connection: Upgrade\r\n");
       connection.write("Sec-WebSocket-Accept: " + acceptString + "\r\n\r\n");
       console.log("websocket connected");
+    } else {
+      getBytes(data.toString());;
     }
   });
 
@@ -62,16 +62,6 @@ wsServer.listen(3001, () => {
   console.log("WebSocket server listening on port 3001");
 });
 
-
-function sha1(data) {
-  const crypto = require("crypto");
-  return crypto.createHash("sha1").update(data);
-}
-
-function base64encode(hashed) {
-  return Buffer.from(hashed).toString("base64");
-}
-
 //Method to check if the data has the key and if it is contained only once.
 function hasKey(data) {
   let split = data.split(" ");
@@ -84,7 +74,26 @@ function hasKey(data) {
     }
   }
   if(count == 1 && index != -1) 
-    return split[index].split("\n")[0];
+    return split[index].split("\n")[0].trim();
   else 
     return null;
+}
+
+function sha1(key) {
+  const crypto = require("crypto");
+  const rfc6455= "258EAFA5-E914-47DA-95CA-C5AB0DC85B11";
+  return crypto.createHash("sha1").update(key + rfc6455, "binary");
+}
+
+
+function base64encode(hashed) {
+  return hashed.digest("base64");
+}
+
+//Convert data recieved from the client from binart to utf-8
+
+function getBytes(data) {
+  let split = data.split(" ");
+  let bytes = Buffer.from(data);
+  console.log(bytes);
 }
