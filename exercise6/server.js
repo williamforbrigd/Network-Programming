@@ -30,7 +30,7 @@ httpServer.listen(3000, () => {
   console.log("HTTP server listening on port 3000");
 });
 
-// Incomplete WebSocket server
+let clients = [];
 const wsServer = net.createServer((connection) => {
   console.log("Client connected");
 
@@ -44,10 +44,13 @@ const wsServer = net.createServer((connection) => {
       connection.write("Upgrade: websocket\r\n");
       connection.write("Connection: Upgrade\r\n");
       connection.write("Sec-WebSocket-Accept: " + acceptString + "\r\n\r\n");
+      clients.push(connection);
       console.log("websocket connected");
     } else {
-      let msg = getMessage(data);
-      console.log("Data recieved from the client: " + msg);
+      let msg = decrypt(data);
+      console.log("Data recieved from client: " + msg);
+
+      sendMessage(msg);
     }
   });
 
@@ -88,7 +91,7 @@ function base64encode(hashed) {
   return hashed.digest("base64");
 }
 
-function getMessage(data) {
+function decrypt(data) {
   let bytes = Buffer.from(data);
   //console.log(bytes);
 
@@ -103,3 +106,17 @@ function getMessage(data) {
   }
   return msg;
 }
+
+//create a function that can send message to the client
+function sendMessage(message, c) {
+  let buffer = Buffer.from(message);
+  console.log(buffer);
+
+  clients.forEach(client => {
+    if(c != client) client.write(buffer);
+  });
+
+
+} 
+
+
