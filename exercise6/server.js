@@ -1,4 +1,5 @@
 const net = require("net");
+const crypto = require("crypto");
 
 // Simple HTTP server responds with a simple WebSocket client test
 const httpServer = net.createServer((connection) => {
@@ -12,7 +13,7 @@ const httpServer = net.createServer((connection) => {
     WebSocket test page
     <script>
       let ws = new WebSocket('ws://localhost:3001');
-      ws.onmessage = event => alert('Message from server: ' + data);
+      ws.onmessage = event => alert('Message from server: ' + event.data);
       ws.onopen = () => ws.send('hello');
     </script>
   </body>
@@ -47,10 +48,12 @@ const wsServer = net.createServer((connection) => {
       clients.push(connection);
       console.log("websocket connected");
     } else {
-      let msg = decrypt(data);
+      let msg = decodeMessage(data);
       console.log("Data recieved from client: " + msg);
 
-      sendMessage(msg);
+      let response = createBufferFromMessage(msg);
+      sendToClients(response, connection);
+      console.log(response);
     }
   });
 
@@ -82,7 +85,6 @@ function hasKey(data) {
 }
 
 function sha1(key) {
-  const crypto = require("crypto");
   const rfc6455 = "258EAFA5-E914-47DA-95CA-C5AB0DC85B11";
   return crypto.createHash("sha1").update(key + rfc6455, "binary");
 }
@@ -91,9 +93,8 @@ function base64encode(hashed) {
   return hashed.digest("base64");
 }
 
-function decrypt(data) {
+function decodeMessage(data) {
   let bytes = Buffer.from(data);
-  //console.log(bytes);
 
   //bytes[0] is the type of message
   let length = bytes[1] & 127; //bytes[1] is the length of the message
@@ -107,16 +108,13 @@ function decrypt(data) {
   return msg;
 }
 
-//create a function that can send message to the client
-function sendMessage(message, c) {
-  let buffer = Buffer.from(message);
-  console.log(buffer);
+function createBufferFromMessage(message) {
+  let sub1 = Buffer.from([0x81, message.length]);
+  let sub2 = Buffer.from(message, "utf-8");
+  return Buffer.concat([sub1, sub2]);
+}
 
-  clients.forEach(client => {
-    if(c != client) client.write(buffer);
-  });
-
-
-} 
-
-
+function sendToClients(buffer, connection) {
+  for (let i = 0; i < clients.length; i++)
+    if (connection != clients[i]) clients[i].write(buffer); //Send the message to all other clients, not the current connection.
+}
