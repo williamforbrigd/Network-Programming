@@ -162,6 +162,7 @@ exercise6/.vscode/settings.json
 exercise6/testing-example/index.html
 exercise6/testing-example/server.js
 exercise6/testing-example/servertest.js
+<<<<<<< HEAD
 exercise2/asio/AsyncClient.class
 exercise2/asio/AsyncServer.class
 exercise2/asio/AsyncServerThread.class
@@ -250,3 +251,8 @@ exercise5/backend-spring/compiler/target/classes/docker-script.sh
 exercise5/backend-spring/compiler/target/classes/main.cpp
 exercise5/backend-spring/compiler/target/test-classes/William/docker/compiler/CompilerApplicationTests.class
 exercise6/exercise6-william.zip
+=======
+exercise5/backend-spring/compiler/.idea/
+exercise5/backend-spring/compiler/compiler.iml
+exercise5/backend-spring/compiler/target/
+>>>>>>> websock
