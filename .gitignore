@@ -162,3 +162,6 @@ exercise6/.vscode/settings.json
 exercise6/testing-example/index.html
 exercise6/testing-example/server.js
 exercise6/testing-example/servertest.js
+exercise5/backend-spring/compiler/.idea/
+exercise5/backend-spring/compiler/compiler.iml
+exercise5/backend-spring/compiler/target/
